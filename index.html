@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MiniJogos</title>
+<style>
+:root {
+  --bg: #0d0d0d;
+  --panel: #181818;
+  --gold: #d4af37;
+  --text: #f5f5f5;
+  --muted: #999;
+  font-family: "Poppins", sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.hidden { display: none; }
+
+/* ===== MENU ===== */
+#menu {
+  text-align: center;
+  animation: fadeIn 0.8s ease;
+}
+#menu h1 {
+  font-size: 2.2rem;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+#menu p {
+  color: var(--muted);
+  margin-bottom: 25px;
+}
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 600px;
+}
+.menu-item {
+  background: var(--panel);
+  border-radius: 12px;
+  padding: 24px 10px;
+  transition: 0.25s;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.menu-item:hover {
+  transform: translateY(-6px);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.menu-item .icon {
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+}
+
+/* ===== JOGOS ===== */
+.game {
+  text-align: center;
+  animation: fadeIn 0.6s ease;
+}
+.game h2 {
+  color: var(--gold);
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+.back {
+  background: none;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-bottom: 20px;
+}
+.back:hover {
+  background: var(--gold);
+  color: #000;
+}
+
+/* ===== PEDRA PAPEL TESOURA ===== */
+.choices {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px 0;
+}
+.choice {
+  font-size: 2rem;
+  background: var(--panel);
+  padding: 15px 25px;
+  border-radius: 10px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+.choice:hover {
+  background: var(--gold);
+  color: #000;
+}
+.result {
+  margin-top: 16px;
+  color: var(--muted);
+}
+
+/* ===== JOGO DA VELHA ===== */
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 90px);
+  gap: 6px;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+.cell {
+  width: 90px; height: 90px;
+  background: var(--panel);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+.cell:hover { background: var(--gold); color: #000; }
+
+/* ===== FORCA ===== */
+.word { letter-spacing: 10px; font-size: 1.4rem; margin: 18px 0; }
+.keyboard {
+  display: flex; flex-wrap: wrap; gap: 4px; justify-content: center;
+  max-width: 300px; margin: 0 auto;
+}
+.key {
+  background: var(--panel);
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: 0.2s;
+}
+.key:hover { background: var(--gold); color: #000; }
+
+/* ===== ADIVINHE ===== */
+input[type=number] {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  margin-right: 8px;
+}
+button {
+  background: var(--gold);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #000;
+  cursor: pointer;
+  transition: 0.2s;
+}
+button:hover { opacity: 0.8; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== MENU PRINCIPAL ===== -->
+<div id="menu">
+  <h1>MiniJogos</h1>
+  <p>Escolha um jogo</p>
+  <div class="menu-grid">
+    <div class="menu-item" onclick="openGame('ppt')"><div class="icon">🪨</div>Pedra, Papel e Tesoura</div>
+    <div class="menu-item" onclick="openGame('velha')"><div class="icon">❌</div>Jogo da Velha</div>
+    <div class="menu-item" onclick="openGame('forca')"><div class="icon">🔠</div>Forca</div>
+    <div class="menu-item" onclick="openGame('adivinhe')"><div class="icon">🎯</div>Adivinhe o Número</div>
+  </div>
+</div>
+
+<!-- ===== PEDRA PAPEL TESOURA ===== -->
+<div id="ppt" class="game hidden">
+  <button class="back" onclick="voltar()">← Voltar</button>
+  <h2>Pedra, Papel e Tesoura</h2>
+  <div class="choices">
+    <div class="choice" onclick="ppt('✊')">✊</div>
+    <div class="choice" onclick="ppt('✋')">✋</div>
+    <div class="choice" onclick="ppt('✌️')">✌️</div>
+  </div>
+  <div class="result" id="pptRes"></div>
+</div>
+
+<!-- ===== JOGO DA VELHA ===== -->
+<div id="velha" class="game hidden">
+  <button class="back" onclick="voltar()">← Voltar</button>
+  <h2>Jogo da Velha</h2>
+  <div class="board" id="board"></div>
+  <div class="result" id="velhaRes"></div>
+</div>
+
+<!-- ===== FORCA ===== -->
+<div id="forca" class="game hidden">
+  <button class="back" onclick="voltar()">← Voltar</button>
+  <h2>Jogo da Forca</h2>
+  <div class="word" id="forcaWord"></div>
+  <div class="keyboard" id="teclado"></div>
+  <div class="result" id="forcaRes"></div>
+</div>
+
+<!-- ===== ADIVINHE ===== -->
+<div id="adivinhe" class="game hidden">
+  <button class="back" onclick="voltar()">← Voltar</button>
+  <h2>Adivinhe o Número</h2>
+  <p style="color: var(--muted)">Número de 1 a 50</p>
+  <input type="number" id="num" placeholder="Digite aqui">
+  <button onclick="adivinhar()">Tentar</button>
+  <div class="result" id="adivRes"></div>
+</div>
+
+<script>
+/* ===== MENU ===== */
+function openGame(id){
+  document.querySelectorAll('#menu, .game').forEach(el => el.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+function voltar(){
+  document.querySelectorAll('.game').forEach(el => el.classList.add('hidden'));
+  document.getElementById('menu').classList.remove('hidden');
+}
+
+/* ===== PEDRA PAPEL TESOURA ===== */
+function ppt(player){
+  const op = ['✊','✋','✌️'];
+  const pc = op[Math.floor(Math.random()*3)];
+  let res = '';
+  if (player===pc) res = 'Empate';
+  else if (
+    (player==='✊'&&pc==='✌️')||
+    (player==='✋'&&pc==='✊')||
+    (player==='✌️'&&pc==='✋')
+  ) res = 'Você venceu';
+  else res = 'Computador venceu';
+  document.getElementById('pptRes').textContent = `Você: ${player} | PC: ${pc} → ${res}`;
+}
+
+/* ===== JOGO DA VELHA ===== */
+const board = document.getElementById('board');
+let turn='X', over=false;
+function criarVelha(){
+  board.innerHTML='';
+  for(let i=0;i<9;i++){
+    const cell=document.createElement('div');
+    cell.className='cell';
+    cell.onclick=()=>marca(cell);
+    board.appendChild(cell);
+  }
+  document.getElementById('velhaRes').textContent='';
+  turn='X'; over=false;
+}
+function marca(cell){
+  if(cell.textContent||over)return;
+  cell.textContent=turn;
+  if(venceu()){
+    document.getElementById('velhaRes').textContent=`${turn} venceu`;
+    over=true;
+    setTimeout(criarVelha,1500);
+    return;
+  }
+  if([...board.children].every(c=>c.textContent)) {
+    document.getElementById('velhaRes').textContent='Empate';
+    setTimeout(criarVelha,1500);
+    return;
+  }
+  turn = turn==='X'?'O':'X';
+}
+function venceu(){
+  const c=[...board.children].map(c=>c.textContent);
+  const l=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  return l.some(([a,b,c2])=>c[a]&&c[a]===c[b]&&c[a]===c[c2]);
+}
+criarVelha();
+
+/* ===== FORCA ===== */
+const palavras=['BANANA','GATO','DOURADO','JANELA','TECLADO'];
+let secreta='', mostrada='', erros=0;
+const wordEl=document.getElementById('forcaWord');
+const teclado=document.getElementById('teclado');
+function novaForca(){
+  secreta=palavras[Math.floor(Math.random()*palavras.length)];
+  mostrada='_'.repeat(secreta.length);
+  wordEl.textContent=mostrada.split('').join(' ');
+  teclado.innerHTML='';
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(l=>{
+    const b=document.createElement('div');
+    b.className='key';
+    b.textContent=l;
+    b.onclick=()=>tentar(l,b);
+    teclado.appendChild(b);
+  });
+  erros=0;
+  document.getElementById('forcaRes').textContent='';
+}
+function tentar(l,b){
+  b.style.opacity='.4'; b.style.pointerEvents='none';
+  let novo=''; let ok=false;
+  for(let i=0;i<secreta.length;i++){
+    if(secreta[i]===l){novo+=l;ok=true;} else novo+=mostrada[i];
+  }
+  mostrada=novo;
+  wordEl.textContent=mostrada.split('').join(' ');
+  if(!ok) erros++;
+  if(mostrada===secreta){
+    document.getElementById('forcaRes').textContent='Acertou';
+    setTimeout(novaForca,1500);
+  } else if(erros>=6){
+    document.getElementById('forcaRes').textContent=`Perdeu (${secreta})`;
+    setTimeout(novaForca,2000);
+  }
+}
+novaForca();
+
+/* ===== ADIVINHE O NÚMERO ===== */
+let num=Math.floor(Math.random()*50)+1;
+function adivinhar(){
+  const val=parseInt(document.getElementById('num').value);
+  const res=document.getElementById('adivRes');
+  if(isNaN(val)) return;
+  if(val===num){res.textContent='Acertou!';num=Math.floor(Math.random()*50)+1;}
+  else if(val>num)res.textContent='Menor';
+  else res.textContent='Maior';
+}
+</script>
+</body>
+</html>
